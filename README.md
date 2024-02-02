@@ -1,5 +1,12 @@
 # 🎲 The Game of Not One
 
+- [The Rules](#the-rules)
+- [Example Game](#example-game)
+- [Getting Started](#getting-started)
+- [Creating Your Own Player](#creating-your-own-player)
+- [Changing Who Plays](#changing-who-plays)
+- [Hints](#hints)
+
 As best I can tell, Not One was first published in the [Nov-Dec 1974 issue of _Creative Computing_ magazine](https://videogamegeek.com/videogame/246481/notone). The game was originally implemented in Basic.
 
 ## The Rules
@@ -34,7 +41,7 @@ ROLL 3: 4, 5 -> Carter's turn score is 25
 Carter decides to not roll again and the turn is finished
 ```
 
-After Round 1, Aiden has 0 total points and Carter has 25 total points. 
+After Round 1, Aiden has 0 total points and Carter has 25 total points.
 
 Round 2:
 
