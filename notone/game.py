@@ -130,5 +130,5 @@ def end_round(state: GameState) -> GameState:
     Returns:
         GameState: The new game state, cleaned up for the end of the round.
     """
-    new_state = asdict(state) | {"round": state.round + 1}
-    return GameState(**new_state)
+    # Doesn't actually do anything at the moment.
+    return state
