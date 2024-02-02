@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 ResetableAttribute = Literal["turn_rolls", "turn_score"]
+IncrementableAttribute = Literal["round", "turn_rolls", "turn_score"]
 
 
 @dataclass

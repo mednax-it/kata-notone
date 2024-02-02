@@ -1,7 +1,7 @@
 from dataclasses import asdict
 import random
 
-from notone.types import GameState, ResetableAttribute
+from notone.types import GameState, IncrementableAttribute, ResetableAttribute
 
 
 def roll_die() -> int:
@@ -67,12 +67,14 @@ def start_turn(state: GameState, active: int) -> GameState:
     return GameState(**new_state)
 
 
-def increment(state: GameState, attribute: str, amount: int = 1) -> GameState:
+def increment(
+    state: GameState, attribute: IncrementableAttribute, amount: int = 1
+) -> GameState:
     """Bumps a game state attribute by a given amount.
 
     Args:
         state (GameState): The current game state.
-        attriburte (str): The attribute in the game state to increment.
+        attriburte (IncrementableAttribute): The attribute in the game state to increment.
         amount (int, optional): The amount to increment the attribute by. Defaults to 1.
 
     Returns:
@@ -87,7 +89,7 @@ def reset(state: GameState, attribute: ResetableAttribute) -> GameState:
 
     Args:
         state (GameState): The current game state.
-        attriburte (str): The attribute in the game state to reset.
+        attriburte (ResetableAttribute): The attribute in the game state to reset.
 
     Returns:
         GameState: The game state with the reset attribute.
