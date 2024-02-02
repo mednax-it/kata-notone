@@ -74,7 +74,39 @@ Play continues like this for eight more rounds.
 1. Clone the forked repo.
 1. Run `poetry install` to get all the dependencies in place.
 1. Run `poetry shell` to activate the virtualenv.
-1. Run `notone` to see the game played by the two example players, Aggro Aiden and Cautious Carter.
+1. Run `notone` to see the game played by the two example players, Aggro Aiden and Cautious Carter. You should see something like this:
+
+```console
+$ notone
+NOT ONE
+
+ROUND 1
+  AGGRO AIDEN
+    🎲: 2+3 ✅ 5
+    🎲: 4+4 ✅ 13
+    🎲: 2+6 ✅ 21
+    🎲: 2+3 ✅ 26
+    🎲: 6+3 ✅ 35
+    🎲: 3+5 ✅ 43
+    SCORE: 43
+  CAUTIOUS CARTER
+    🎲: 3+3 ✅ 6
+    🎲: 5+1 ❌ 0
+    SCORE: 0
+
+...
+
+GAME OVER
+
+FINAL SCORE
+😤 Aggro Aiden: 0 in 31 rolls
+😳 Cautious Carter: 156 in 28 rolls
+
+WINNER: 😳 Cautious Carter
+Oh I won? That's good, right?
+
+$
+```
 
 Once you can play the game with the example players, you're ready to start creating your own player, as described below.
 
