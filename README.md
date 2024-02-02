@@ -71,7 +71,7 @@ Play continues like this for eight more rounds.
 ## Getting Started
 
 1. Fork this repo.
-1. Clone the forked repo.
+1. Clone the forked repo and change into the `kata-notone` directory.
 1. Run `poetry install` to get all the dependencies in place.
 1. Run `poetry shell` to activate the virtualenv.
 1. Run `notone` to see the game played by the two example players, Aggro Aiden and Cautious Carter. You should see something like this:
