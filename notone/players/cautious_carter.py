@@ -17,4 +17,4 @@ def victory_cry() -> str:
 
 
 def roll_again(state: GameState) -> bool:
-    return state.turn_rolls < 3
+    return state.turn_rolls < 1
