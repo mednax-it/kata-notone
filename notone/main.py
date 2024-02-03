@@ -16,11 +16,11 @@ def play() -> int:
 
     num_players = len(players)
     state = GameState()
-    for x in range(1, 11):
-        state = game.start_round(state, x)
+    for round in range(1, 11):
+        state = game.start_round(state, round)
         print(f"\nROUND {state.round}")
 
-        for active in range(num_players):
+        for active in game.turn_order(num_players, round):
             player = players[active]
             print(f"  {player.name().upper()}")
             state = game.start_turn(state, active)

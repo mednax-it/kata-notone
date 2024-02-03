@@ -1,5 +1,6 @@
-from dataclasses import asdict
 import random
+from dataclasses import asdict
+from typing import Iterator
 
 from notone.types import GameState, IncrementableAttribute, ResetableAttribute
 
@@ -50,6 +51,20 @@ def start_round(state: GameState, round: int) -> GameState:
     """
     new_state = asdict(state) | {"round": round}
     return GameState(**new_state)
+
+
+def turn_order(num_players: int, round: int) -> Iterator:
+    """Generates the turn order for a given round.
+
+    Args:
+        round (int): The round number.
+
+    Returns:
+        iter: An iterator of the player indices in the order of turn.
+    """
+    order = range(num_players)
+    order = order if round % 2 == 1 else reversed(order)
+    return iter(order)
 
 
 def start_turn(state: GameState, active: int) -> GameState:

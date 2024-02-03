@@ -7,6 +7,7 @@ from notone.game import (
     roll_die,
     start_round,
     start_turn,
+    turn_order,
 )
 from notone.types import GameState
 
@@ -88,3 +89,11 @@ def test_end_turn_updates_score_with_turn_score():
 def test_end_turn_updates_rolls_with_turn_rolls():
     state = end_turn(GameState(turn_rolls=5, rolls=(10, 20)), active=1)
     assert state.rolls == (10, 25)
+
+
+def test_turn_order_is_normal_for_odd_rounds():
+    assert list(turn_order(num_players=2, round=1)) == [0, 1]
+
+
+def test_turn_order_is_reversed_for_even_rounds():
+    assert list(turn_order(num_players=2, round=2)) == [1, 0]
