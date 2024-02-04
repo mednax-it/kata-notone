@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from types import ModuleType
 from typing import Literal
 
 ResetableAttribute = Literal["turn_rolls", "turn_score"]
 IncrementableAttribute = Literal["round", "turn_rolls", "turn_score"]
+Player = ModuleType
 
 
 @dataclass
