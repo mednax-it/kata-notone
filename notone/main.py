@@ -6,20 +6,19 @@ on how to work with this code, including setting up your Not One player:
 
 https://github.com/mednax-it/kata-notone#creating-your-own-player
 """
-import sys
+import typer
 
 from notone import console, game, players
 
 
-def main() -> int:
+def main():
     try:
         opponents = players.load()
         game.play(opponents)
     except Exception as e:
         console.error(e)
-        return 1
-    return 0
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    typer.run(main)

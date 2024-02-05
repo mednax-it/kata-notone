@@ -1,3 +1,5 @@
+from rich import print
+
 from notone import signals
 from notone.types import GameState, Player
 
@@ -37,7 +39,7 @@ def handle_roll_succeeded(game: GameState, d1: int, d2: int):
 
 @signals.turn_ended.connect
 def handle_turn_ended(game: GameState, player: Player):
-    echo(f"    SCORE: {game.scores[game.active]}")
+    echo(f"    TOTAL SCORE: {game.scores[game.active]}")
 
 
 @signals.game_ended.connect
