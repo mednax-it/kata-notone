@@ -1,8 +1,9 @@
 import random
 from dataclasses import asdict
 from typing import Iterator
+from notone import signals
 
-from notone.types import GameState, IncrementableAttribute, ResetableAttribute
+from notone.types import GameState, IncrementableAttribute, Player, ResetableAttribute
 
 
 def roll_die() -> int:
@@ -147,3 +148,35 @@ def end_round(state: GameState) -> GameState:
     """
     # Doesn't actually do anything at the moment.
     return state
+
+
+def play(players: list[Player]):
+    state = GameState()
+    signals.game_started.send(state)
+
+    for round in range(1, 11):
+        state = start_round(state, round)
+        signals.round_started.send(state, round=round)
+
+        for active in turn_order(len(players), round):
+            player = players[active]
+            state = start_turn(state, active)
+            signals.turn_started.send(state, player=player)
+
+            while player.roll_again(state):
+                d1, d2 = roll()
+                state = increment(state, "turn_rolls", 1)
+                signals.rolled.send(state, d1=d1, d2=d2)
+                if failed(state, d1, d2):
+                    state = reset(state, "turn_score")
+                    signals.roll_failed.send(state, d1=d1, d2=d2)
+                    break
+                state = increment(state, "turn_score", d1 + d2)
+                signals.roll_succeeded.send(state, d1=d1, d2=d2)
+            state = end_turn(state, active)
+            signals.turn_ended.send(state, active=active)
+
+        end_round(state)
+        signals.round_ended.send(state)
+
+    signals.game_ended.send(state, players=players)
