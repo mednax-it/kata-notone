@@ -1,7 +1,6 @@
 import pytest
 
 from notone import game, signals
-from notone.types import GameState
 
 
 def test_game_starts(opponents, game_started):
@@ -63,9 +62,24 @@ def test_not_rolling_again_ends_turn_and_adds_turn_score_to_total(
     assert state.scores[0] == state.turn_score
 
 
+def test_p1_wins(aggressive_player, cautious_player):
+    state = game.play([cautious_player, aggressive_player])
+    assert state.winner == 0
+
+
+def test_p2_wins(aggressive_player, cautious_player):
+    state = game.play([aggressive_player, cautious_player])
+    assert state.winner == 1
+
+
+def test_a_tie_happens(opponents):
+    state = game.play(opponents, rounds=0)
+    assert state.winner is None
+
+
 @pytest.fixture
-def opponents(aggressive_player):
-    return [aggressive_player, aggressive_player]
+def opponents(aggressive_player, cautious_player):
+    return [aggressive_player, cautious_player]
 
 
 @pytest.fixture
@@ -78,7 +92,7 @@ def aggressive_player(mocker):
 @pytest.fixture
 def cautious_player(mocker):
     player = mocker.Mock()
-    player.roll_again.side_effect = [True, False]
+    player.roll_again.side_effect = [True, False] * 10
     return player
 
 

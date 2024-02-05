@@ -150,6 +150,25 @@ def end_round(state: GameState) -> GameState:
     return state
 
 
+def select_winner(state: GameState) -> GameState:
+    """Sets the winner—the player with the highest total points—of the game.
+
+    Args:
+        state (GameState): The current game state.
+
+    Returns:
+        GameState: The new game state with the winner set.
+    """
+    if state.scores[0] > state.scores[1]:
+        winner = 0
+    elif state.scores[1] > state.scores[0]:
+        winner = 1
+    else:
+        winner = None
+    new_state = asdict(state) | {"winner": winner}
+    return GameState(**new_state)
+
+
 def play(players: list[Player], rounds=10) -> GameState:
     state = GameState()
     signals.game_started.send(state)
@@ -179,5 +198,6 @@ def play(players: list[Player], rounds=10) -> GameState:
         end_round(state)
         signals.round_ended.send(state, round=round)
 
+    state = select_winner(state)
     signals.game_ended.send(state, players=players)
     return state

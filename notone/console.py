@@ -50,13 +50,10 @@ def handle_game_ended(game: GameState, players: list[Player]):
             f"{game.scores[active]} in {game.rolls[active]} rolls"
         )
 
-    if game.scores[0] > game.scores[1]:
-        winner = players[0]
-    elif game.scores[1] > game.scores[0]:
-        winner = players[1]
-    else:
+    if game.winner is None:
         echo("TIE! Play again.")
-        return 1
-    echo(f"\nWINNER: {winner.emoji()} {winner.name()}")
-    echo(winner.victory_cry() + "\n")
+    else:
+        winner = players[game.winner]
+        echo(f"\n🏆 WINNER: {winner.emoji()} {winner.name()}")
+        echo(f"{winner.name()} YAWPS: {winner.victory_cry()}\n")
     echo("GAME OVER")

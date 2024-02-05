@@ -5,6 +5,7 @@ from notone.game import (
     reset,
     roll,
     roll_die,
+    select_winner,
     start_round,
     start_turn,
     turn_order,
@@ -97,3 +98,18 @@ def test_turn_order_is_normal_for_odd_rounds():
 
 def test_turn_order_is_reversed_for_even_rounds():
     assert list(turn_order(num_players=2, round=2)) == [1, 0]
+
+
+def test_select_winner_p1_wins():
+    state = select_winner(GameState(scores=(30, 20)))
+    assert state.winner == 0
+
+
+def test_select_winner_p2_wins():
+    state = select_winner(GameState(scores=(20, 30)))
+    assert state.winner == 1
+
+
+def test_select_winner_tie():
+    state = select_winner(GameState(scores=(20, 20)))
+    assert state.winner is None
