@@ -1,6 +1,8 @@
+from dataclasses import FrozenInstanceError
 import pytest
 
 from notone import game, signals
+from notone.types import GameState
 
 
 def test_game_starts(opponents, game_started):
@@ -75,6 +77,16 @@ def test_p2_wins(aggressive_player, cautious_player):
 def test_a_tie_happens(opponents):
     state = game.play(opponents, rounds=0)
     assert state.winner is None
+
+
+def test_prevents_game_state_mutating(mocker):
+    def hack_winner(state: GameState):
+        state.winner = 0  # type: ignore
+
+    malicious_player = mocker.Mock()
+    malicious_player.roll_again.side_effect = hack_winner
+    with pytest.raises(FrozenInstanceError):
+        game.play([malicious_player], rounds=1)
 
 
 @pytest.fixture

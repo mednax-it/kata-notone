@@ -7,7 +7,7 @@ IncrementableAttribute = Literal["round", "turn_rolls", "turn_score"]
 Player = ModuleType
 
 
-@dataclass
+@dataclass(frozen=True)
 class GameState:
     active: int = 0
     rolls: tuple[int, int] = (0, 0)
