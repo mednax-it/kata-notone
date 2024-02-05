@@ -12,8 +12,8 @@ from notone import console, game, players
 
 
 def main() -> int:
-    opponents = players.load()
     try:
+        opponents = players.load()
         game.play(opponents)
     except Exception as e:
         console.error(e)
