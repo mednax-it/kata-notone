@@ -36,8 +36,8 @@ def handle_roll_succeeded(game: GameState, d1: int, d2: int):
 
 
 @signals.turn_ended.connect
-def handle_turn_ended(game: GameState, active: int):
-    echo(f"    SCORE: {game.scores[active]}")
+def handle_turn_ended(game: GameState, player: Player):
+    echo(f"    SCORE: {game.scores[game.active]}")
 
 
 @signals.game_ended.connect

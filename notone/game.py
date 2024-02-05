@@ -150,11 +150,11 @@ def end_round(state: GameState) -> GameState:
     return state
 
 
-def play(players: list[Player]):
+def play(players: list[Player], rounds=10) -> GameState:
     state = GameState()
     signals.game_started.send(state)
 
-    for round in range(1, 11):
+    for round in range(1, rounds + 1):
         state = start_round(state, round)
         signals.round_started.send(state, round=round)
 
@@ -174,9 +174,10 @@ def play(players: list[Player]):
                 state = increment(state, "turn_score", d1 + d2)
                 signals.roll_succeeded.send(state, d1=d1, d2=d2)
             state = end_turn(state, active)
-            signals.turn_ended.send(state, active=active)
+            signals.turn_ended.send(state, player=player)
 
         end_round(state)
-        signals.round_ended.send(state)
+        signals.round_ended.send(state, round=round)
 
     signals.game_ended.send(state, players=players)
+    return state
