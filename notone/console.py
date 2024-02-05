@@ -51,7 +51,7 @@ def handle_game_ended(game: GameState, players: list[Player]):
         )
 
     if game.winner is None:
-        echo("TIE! Play again.")
+        echo("\nTIE! Play again.\n")
     else:
         winner = players[game.winner]
         echo(f"\n🏆 WINNER: {winner.emoji()} {winner.name()}")
