@@ -5,18 +5,16 @@ from notone.types import GameState
 
 
 def test_game_starts(opponents, game_started):
-    game.play(opponents, rounds=0)
+    state = game.play(opponents, rounds=0)
     assert game_started.called
-    state: GameState = game_started.call_args[0][0]
     assert state.round == 0
     assert state.scores == (0, 0)
     assert state.rolls == (0, 0)
 
 
 def test_default_game_ends_after_10_rounds(opponents, round_ended, game_ended):
-    game.play(opponents)
+    state = game.play(opponents)
     assert game_ended.called
-    state: GameState = game_ended.call_args[0][0]
     assert state.round == 10
     assert round_ended.call_count == 10
 
@@ -41,9 +39,8 @@ def test_turns_happen_in_proper_order(opponents, turn_ended):
 
 
 def test_each_successful_roll_adds_to_turn_score(cautious_player, roll_succeeded):
-    game.play([cautious_player], rounds=1)
+    state = game.play([cautious_player], rounds=1)
     assert roll_succeeded.called
-    state: GameState = roll_succeeded.call_args[0][0]
     d1 = roll_succeeded.call_args[1]["d1"]
     d2 = roll_succeeded.call_args[1]["d2"]
     assert state.turn_score == d1 + d2
@@ -52,9 +49,8 @@ def test_each_successful_roll_adds_to_turn_score(cautious_player, roll_succeeded
 def test_failed_roll_zeros_turn_score_and_ends_turn(
     aggressive_player, roll_failed, turn_ended
 ):
-    game.play([aggressive_player], rounds=1)
+    state = game.play([aggressive_player], rounds=1)
     assert roll_failed.called
-    state: GameState = roll_failed.call_args[0][0]
     assert state.turn_score == 0
     assert turn_ended.called
 
@@ -62,9 +58,8 @@ def test_failed_roll_zeros_turn_score_and_ends_turn(
 def test_not_rolling_again_ends_turn_and_adds_turn_score_to_total(
     cautious_player, turn_ended
 ):
-    game.play([cautious_player], rounds=1)
+    state = game.play([cautious_player], rounds=1)
     assert turn_ended.called
-    state: GameState = turn_ended.call_args[0][0]
     assert state.scores[0] == state.turn_score
 
 
