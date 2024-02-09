@@ -20,8 +20,7 @@ def test_roll_die_does_not_exceed_range():
 
 
 def test_roll_returns_results_for_two_dice():
-    results = roll()
-    assert len(results) == 2
+    assert len(roll(GameState()).roll) == 2
 
 
 def test_failed_fails_if_first_die_is_one():

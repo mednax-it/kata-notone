@@ -15,4 +15,5 @@ class GameState:
     scores: tuple[int, int] = (0, 0)
     turn_rolls: int = 0
     turn_score: int = 0
+    roll: tuple[int, int] = (0, 0)
     winner: Optional[int] = None

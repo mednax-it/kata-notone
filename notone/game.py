@@ -15,13 +15,19 @@ def roll_die() -> int:
     return random.randint(1, 6)
 
 
-def roll() -> tuple[int, int]:
+def roll(state: GameState) -> GameState:
     """Simulates rolling two dice.
 
+    Args:
+        state (GameState): The current game state.
+
     Returns:
-        tuple[int, int]: The face values for each die.
+        GameState: The new game state, with the roll results saved and roll
+        counter incremented.
     """
-    return (roll_die(), roll_die())
+    increment_turn_rolls = increment(state, "turn_rolls", 1)
+    new_state = asdict(increment_turn_rolls) | {"roll": (roll_die(), roll_die())}
+    return GameState(**new_state)
 
 
 def failed(state: GameState, d1: int, d2: int) -> bool:
@@ -183,8 +189,8 @@ def play(players: list[Player], rounds=10) -> GameState:
             signals.turn_started.send(state, player=player)
 
             while player.roll_again(state):
-                d1, d2 = roll()
-                state = increment(state, "turn_rolls", 1)
+                state = roll(state)
+                d1, d2 = state.roll
                 signals.rolled.send(state, d1=d1, d2=d2)
                 if failed(state, d1, d2):
                     state = reset(state, "turn_score")
