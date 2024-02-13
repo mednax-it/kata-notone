@@ -62,7 +62,9 @@ def handle_tournament_started(tournament: TournamentState):
 
 def handle_tournament_round_started(tournament: TournamentState, players: list[Player]):
     num_players = len(players)
-    if num_players == 2:
+    if None in players:
+        name = "Play-in Round"
+    elif num_players == 2:
         name = "Championship"
     elif num_players == 4:
         name = "Final Four"
