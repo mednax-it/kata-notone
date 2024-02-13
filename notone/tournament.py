@@ -6,9 +6,7 @@ from notone import game, signals
 from notone.types import Player, TournamentState
 
 
-def play(
-    players: list[Optional[Player]], rounds: Optional[int] = None
-) -> TournamentState:
+def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState:
     num_of_players = len(players)
     # Since this is a blind-seeded tournament, we'll give everyone a shuffle.
     players = random.sample(players, num_of_players)
@@ -20,9 +18,9 @@ def play(
     # required number.
     num_of_bracket_slots = int(math.pow(2, rounds))
     num_of_byes = num_of_bracket_slots - num_of_players
-    players = players + [None] * num_of_byes
+    competitors = players + [None] * num_of_byes
 
-    state = TournamentState(players=players, winners=players)
+    state = TournamentState(players=competitors, winners=competitors)
     signals.tournament_started.send(state)
 
     # Play the games
