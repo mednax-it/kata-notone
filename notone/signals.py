@@ -12,3 +12,9 @@ turn_ended = signal("turn_ended")
 rolled = signal("rolled")
 roll_succeeded = signal("roll_succeeded")
 roll_failed = signal("roll_failed")
+
+tournament_started = signal("tournament_started")
+tournament_ended = signal("tournament_ended")
+
+tournament_round_started = signal("tournament_round_started")
+tournament_round_ended = signal("tournament_round_ended")
