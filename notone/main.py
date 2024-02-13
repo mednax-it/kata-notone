@@ -15,8 +15,10 @@ def main():
     try:
         opponents = players.load()
         if len(opponents) > 2:
+            console.connect_output("tournament")
             tournament.play(opponents)
         else:
+            console.connect_output("game")
             game.play(opponents)
     except Exception as e:
         console.error(e)

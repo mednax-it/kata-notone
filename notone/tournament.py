@@ -27,7 +27,7 @@ def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState
     round = 1
     while round <= rounds:
         state = state.update(round=round)
-        signals.tournament_round_started.send(state, round=round)
+        signals.tournament_round_started.send(state, players=competitors)
 
         half_length = len(competitors) // 2
         left_bracket = competitors[:half_length]
@@ -57,5 +57,5 @@ def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState
 
     if len(competitors) == 1 and competitors[0] is not None:
         state = state.update(champion=players.index(competitors[0]))
-    signals.tournament_ended.send(state)
+    signals.tournament_ended.send(state, players=players)
     return state
