@@ -20,7 +20,7 @@ def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState
     num_of_byes = num_of_bracket_slots - num_of_players
     competitors = players + [None] * num_of_byes
 
-    state = TournamentState(players=competitors, winners=competitors)
+    state = TournamentState()
     signals.tournament_started.send(state)
 
     # Play the games
@@ -29,9 +29,9 @@ def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState
         state = state.update(round=round)
         signals.tournament_round_started.send(state, round=round)
 
-        half_length = len(state.winners) // 2
-        left_bracket = state.winners[:half_length]
-        right_bracket = state.winners[half_length:]
+        half_length = len(competitors) // 2
+        left_bracket = competitors[:half_length]
+        right_bracket = competitors[half_length:]
         right_bracket = list(reversed(right_bracket))
 
         round_winners: list[Player] = []
@@ -51,11 +51,11 @@ def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState
                 winner = p2 if game_state.winner else p1
             round_winners += [winner]
 
-        state = state.update(winners=round_winners)
+        competitors = round_winners.copy()
         signals.tournament_round_ended.send(state, round=round)
         round += 1
 
-    if len(state.winners) == 1:
-        state = state.update(champion=state.winners[0])
+    if len(competitors) == 1 and competitors[0] is not None:
+        state = state.update(champion=players.index(competitors[0]))
     signals.tournament_ended.send(state)
     return state

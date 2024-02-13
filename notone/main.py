@@ -8,16 +8,19 @@ https://github.com/mednax-it/kata-notone#creating-your-own-player
 """
 import typer
 
-from notone import console, game, players
+from notone import console, game, players, tournament
 
 
 def main():
     try:
         opponents = players.load()
-        game.play(opponents)
+        if len(opponents) > 2:
+            tournament.play(opponents)
+        else:
+            game.play(opponents)
     except Exception as e:
         console.error(e)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 if __name__ == "__main__":
