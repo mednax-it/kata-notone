@@ -1,3 +1,4 @@
+import sys
 from rich import print
 
 from notone import signals
@@ -9,7 +10,7 @@ def echo(message: str):
 
 
 def error(e: Exception):
-    echo(f"ERROR: {e}")
+    print(f"ERROR: {e}", file=sys.stderr)
 
 
 @signals.game_started.connect
