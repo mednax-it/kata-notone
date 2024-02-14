@@ -52,7 +52,7 @@ def play(players: list[Player], rounds: Optional[int] = None) -> TournamentState
             round_winners += [winner]
 
         competitors = round_winners.copy()
-        signals.tournament_round_ended.send(state, round=round)
+        signals.tournament_round_ended.send(state, players=competitors)
         round += 1
 
     if len(competitors) == 1 and competitors[0] is not None:
