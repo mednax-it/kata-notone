@@ -6,12 +6,12 @@ from notone import signals
 from notone.types import SignalHandler, GameState, GameType, Player, TournamentState
 
 
-def echo(message: str):
-    print(message)
+def echo(message: str, **kwargs):
+    print(message, **kwargs)
 
 
 def error(e: Exception):
-    print(f"ERROR: {e}", file=sys.stderr)
+    echo(f"ERROR: {e}", file=sys.stderr)
 
 
 def handle_game_started(game: GameState):
@@ -77,6 +77,12 @@ def handle_tournament_round_started(tournament: TournamentState, players: list[P
     echo(f"\n{name.upper()}")
 
 
+def handle_tournament_round_ended(tournament: TournamentState, players: list[Player]):
+    if len(players) <= 1:
+        return
+    input("\n  Press enter to play the next round...")
+
+
 def handle_tournament_game_ended(game: GameState, players: list[Player]):
     if game.winner is None:
         return
@@ -114,6 +120,7 @@ signal_handlers: dict[GameType, SignalHandler] = {
     "tournament": SignalHandler(
         tournament_started=handle_tournament_started,
         tournament_round_started=handle_tournament_round_started,
+        tournament_round_ended=handle_tournament_round_ended,
         game_ended=handle_tournament_game_ended,
         tournament_ended=handle_tournament_ended,
     ),
