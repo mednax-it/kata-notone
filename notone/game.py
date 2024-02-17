@@ -1,9 +1,14 @@
 import random
 from dataclasses import asdict
 from typing import Iterator
-from notone import signals
 
-from notone.types import GameState, IncrementableAttribute, Player, ResetableAttribute
+from notone import signals
+from notone.types import (
+    GameState,
+    IncrementableAttribute,
+    Player,
+    ResetableAttribute,
+)
 
 
 def roll_die() -> int:

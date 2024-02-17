@@ -159,6 +159,20 @@ players: list[ModuleType] = [
 ]
 ```
 
+## Playing a Tournament
+
+If you add more than 2 players, you'll trigger tournament mode. Not One uses a blind-seeded, single-elimination tournament.
+
+"Blind-seeded" means the teams are seeded (given a ranking from 1-N, where N is the number of players) randomly. The alternative would be to seed them based on their skill, where the best team would be the #1 seed; this is what you see with famous tournaments like college basketball during March Madness. However, since we don't have a regular season or win/loss records to ascertain the "skill" of our Not One players, we simply shuffle all the players and randomly assign seeds.
+
+"Single-elimination" means that, if you lose once, you're out of the tournament. There are also double-elimination tournaments, brackets for the losers, round robin play, and all sorts of other approaches that are more complicated to model ([Cambridge has an online math lesson on the topic](https://nrich.maths.org/1443)), so we're keeping things simple with single-elimination.
+
+### Field Size & Byes
+
+Single-elimination tournaments must have a power of 2-sized number of entries, that is, a field of 2 (2^1), 4 (2^2), 8 (2^3), 16 (2^4), 32 (2^5), and so on. So what do we do if the number of entries is not a power of 2? In that case, we leave the rest of the slots empty (or in code a null value, which is `None` in Python). Teams who don't have an opponent the first round have what's called a "bye"; they automatically advance to the next round. For example, if you add five players, it will give three of them byes… that is, three more entries will be added to the field, but instead of being players they're simply null values. Think of the empty slots in the bracket below as null or `None` values.
+
+![8 team bracket with 5 entries and 3 byes](images/bracket_with_byes.png "8 team bracket with 5 entries and 3 byes")
+
 ## Hints
 
 - `active` is handy for snagging your total score (`state.scores[active]`) and your total rolls (`state.rolls[active]`).
