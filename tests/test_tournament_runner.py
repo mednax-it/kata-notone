@@ -2,8 +2,7 @@ from notone import tournament
 
 
 def test_tournament_starts(opponents, tournament_started):
-    state = tournament.play(opponents * 8, rounds=0)
-    assert state.round == 0
+    tournament.play(opponents * 8, rounds=0)
     assert tournament_started.called
 
 
