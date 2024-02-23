@@ -5,7 +5,7 @@ from typing import Callable, Literal, Optional
 
 ResetableAttribute = Literal["turn_rolls", "turn_score"]
 IncrementableAttribute = Literal["round", "turn_rolls", "turn_score"]
-GameType = Literal["game", "tournament"]
+GameType = Literal["game", "tournament", "stress_test"]
 Player = ModuleType
 
 
@@ -56,3 +56,12 @@ class SignalHandler:
 
     tournament_round_started: Callable = do_nothing
     tournament_round_ended: Callable = do_nothing
+
+    stress_test_started: Callable = do_nothing
+    stress_test_ended: Callable = do_nothing
+
+    stress_test_player_started: Callable = do_nothing
+    stress_test_player_ended: Callable = do_nothing
+
+    stress_test_game_started: Callable = do_nothing
+    stress_test_game_ended: Callable = do_nothing

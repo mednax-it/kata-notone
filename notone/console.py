@@ -7,6 +7,7 @@ from rich.align import Align
 from rich.console import Console, Group, RenderableType
 from rich.live import Live
 from rich.panel import Panel
+from rich.table import Table
 from rich.theme import Theme
 
 from notone import game, signals
@@ -134,7 +135,7 @@ def handle_tournament_rolled(state: GameState, d1: int, d2: int):
 def handle_tournament_round_ended(state: GameState, round: int, players: list[Player]):
     p1_style = "bold green" if state.scores[0] > state.scores[1] else "bold red"
     p2_style = "bold green" if state.scores[1] > state.scores[0] else "bold red"
-    echo("\n")
+    console.line()
     console.rule(
         f"ROUND {round}: "
         f"[{p1_style}]{players[0].name().upper()}: {state.scores[0]}[/] | "
@@ -206,6 +207,45 @@ def handle_tournament_ended(tournament: TournamentState, players: list[Player]):
         console.print(panel(Align.center("Tournament Over".upper())))
 
 
+def handle_stress_test_started(players: list[Player], total_games: int):
+    console.print(
+        panel(
+            Group(
+                Align.center(bigify("Stress Test")),
+                Align.center(""),
+                Align.center(f"Each player plays {total_games} games"),
+            )
+        )
+    )
+
+
+def handle_stress_test_ended(scoreboard: dict[str, float]):
+    scores = Table("Player", "Avg. Score", box=box.SIMPLE_HEAVY)
+    for player, score in scoreboard.items():
+        scores.add_row(player, str(score))
+    console.print(panel(Align.center(scores)))
+
+
+def handle_stress_test_player_started(player: Player, total_games: int):
+    brand = player.name()
+    padding = " " * (35 - len(brand))
+    console.print(f"{brand}:{padding}", end="")
+
+
+def handle_stress_test_game_ended(
+    player: Player, game_number: int, total_games: int, score: int
+):
+    increment = total_games // 100
+    if game_number % increment == 0:
+        console.print("🁢", end="")
+
+
+def handle_stress_test_player_ended(
+    player: Player, average_score: int, cumulative_score: int
+):
+    console.print(f" {cumulative_score:,} pts")
+
+
 signal_handlers: dict[GameType, SignalHandler] = {
     "game": SignalHandler(
         game_started=handle_game_started,
@@ -225,6 +265,13 @@ signal_handlers: dict[GameType, SignalHandler] = {
         round_ended=handle_tournament_round_ended,
         game_ended=handle_tournament_game_ended,
         tournament_ended=handle_tournament_ended,
+    ),
+    "stress_test": SignalHandler(
+        stress_test_started=handle_stress_test_started,
+        stress_test_ended=handle_stress_test_ended,
+        stress_test_player_started=handle_stress_test_player_started,
+        stress_test_player_ended=handle_stress_test_player_ended,
+        stress_test_game_ended=handle_stress_test_game_ended,
     ),
 }
 
@@ -250,3 +297,12 @@ def connect_output(type: GameType):
 
     signals.tournament_round_started.connect(handle.tournament_round_started)
     signals.tournament_round_ended.connect(handle.tournament_round_ended)
+
+    signals.stress_test_started.connect(handle.stress_test_started)
+    signals.stress_test_ended.connect(handle.stress_test_ended)
+
+    signals.stress_test_player_started.connect(handle.stress_test_player_started)
+    signals.stress_test_player_ended.connect(handle.stress_test_player_ended)
+
+    signals.stress_test_game_started.connect(handle.stress_test_game_started)
+    signals.stress_test_game_ended.connect(handle.stress_test_game_ended)

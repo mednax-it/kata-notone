@@ -12,6 +12,7 @@ from notone import (
     console,
     game as game_runner,
     players,
+    stress_test as stress_test_runner,
     tournament as tournament_runner,
 )
 
@@ -38,6 +39,12 @@ def game():
 def tournament():
     console.connect_output("tournament")
     tournament_runner.play(players.load())
+
+
+@app.command()
+def stress_test():
+    console.connect_output("stress_test")
+    stress_test_runner.play(players.load())
 
 
 if __name__ == "__main__":
