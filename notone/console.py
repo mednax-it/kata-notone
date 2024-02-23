@@ -93,7 +93,12 @@ def handle_game_ended(state: GameState, players: list[Player]):
 
 
 def handle_tournament_started(tournament: TournamentState):
-    console.print(panel(Align.center(bigify("Not One Tournament"))))
+    console.print(
+        panel(
+            Group(Align.center(bigify("Not One")), Align.center(bigify("Tournament")))
+        )
+    )
+    console.input("Press enter to start...")
 
 
 def handle_tournament_round_started(tournament: TournamentState, players: list[Player]):
@@ -183,7 +188,8 @@ def handle_tournament_ended(tournament: TournamentState, players: list[Player]):
 
         header = Align.center("🏆 THE CHAMPION IS:")
         champ_title = "A champion is crowned".upper()
-        champ_name = Align.center(bigify(champion.name()))
+        name_font = "tarty1" if len(champion.name()) < 20 else "minion"
+        champ_name = Align.center(bigify(champion.name(), font=name_font))
         victory_cry_title = f"{champion.name()} yawps".upper()
 
         with Live(generate_panel(Group(), title=champ_title)) as live:
@@ -195,7 +201,7 @@ def handle_tournament_ended(tournament: TournamentState, players: list[Player]):
         with Live(generate_panel(Group(), title=victory_cry_title)) as live:
             victory_cry = champion.victory_cry()
             quote = ""
-            font = "tarty1" if len(victory_cry) < 30 else "minion"
+            font = "tarty1" if len(victory_cry) < 20 else "minion"
             for word in victory_cry.split():
                 time.sleep(0.5)
                 quote += word + " "
@@ -231,14 +237,14 @@ def handle_stress_test_ended(scoreboard: dict[str, float]):
 
 def handle_stress_test_player_started(player: Player, total_games: int):
     brand = player.name()
-    padding = " " * (35 - len(brand))
+    padding = " " * (30 - len(brand))
     console.print(f"{brand}:{padding}", end="")
 
 
 def handle_stress_test_game_ended(
     player: Player, game_number: int, total_games: int, score: int
 ):
-    increment = total_games // 100
+    increment = total_games // 50
     if game_number % increment == 0:
         console.print("🁢", end="")
 

@@ -1,3 +1,5 @@
+import random
+
 from notone import game, signals
 from notone.schema import Player
 
@@ -5,7 +7,7 @@ from notone.schema import Player
 def play(players: list[Player], total_games: int = 10000) -> None:
     signals.stress_test_started.send(players, total_games=total_games)
     scoreboard: dict[str, float] = {}
-    for player in players:
+    for player in random.sample(players, len(players)):
         signals.stress_test_player_started.send(player, total_games=total_games)
         cumulative_score = 0
         for x in range(total_games):
