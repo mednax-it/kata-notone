@@ -182,7 +182,7 @@ def select_winner(state: GameState) -> GameState:
 
 def play(players: list[Player], rounds=10) -> GameState:
     state = GameState()
-    signals.game_started.send(state)
+    signals.game_started.send(state, players=players)
 
     for round in range(1, rounds + 1):
         state = start_round(state, round)
@@ -207,7 +207,7 @@ def play(players: list[Player], rounds=10) -> GameState:
             signals.turn_ended.send(state, player=player)
 
         end_round(state)
-        signals.round_ended.send(state, round=round)
+        signals.round_ended.send(state, round=round, players=players)
 
     state = select_winner(state)
     signals.game_ended.send(state, players=players)

@@ -1,63 +1,98 @@
-import sys
+import random
+import time
 
-from rich import print
+from art import text2art
+from rich import box
+from rich.align import Align
+from rich.console import Console, Group
+from rich.live import Live
+from rich.panel import Panel
+from rich.theme import Theme
 
-from notone import signals
+from notone import game, signals
 from notone.schema import SignalHandler, GameState, GameType, Player, TournamentState
 
 
+default_theme = Theme(
+    {
+        "primary": "white",
+        "secondary": "bright_black",
+        "winner": "green",
+        "loser": "red",
+        "error": "bold red",
+    }
+)
+
+console = Console(theme=default_theme)
+error_console = Console(stderr=True, theme=default_theme, style="error")
+
+
+def bigify(content: str, font="tarty1"):
+    return str(text2art(content.upper(), font=font))
+
+
+def panel(renderable, title=None, style="primary") -> Panel:
+    return Panel(
+        renderable,
+        title=title,
+        style=style,
+        box=box.DOUBLE,
+        padding=(1, 2),
+    )
+
+
 def echo(message: str, **kwargs):
-    print(message, **kwargs)
+    console.print(message, **kwargs)
 
 
 def error(e: Exception):
-    echo(f"ERROR: {e}", file=sys.stderr)
+    error_console.print(f"ERROR: {e}")
 
 
-def handle_game_started(game: GameState):
+def handle_game_started(state: GameState, players: list[Player]):
     echo("NOT ONE")
 
 
-def handle_round_started(game: GameState, round: int):
+def handle_round_started(state: GameState, round: int):
     echo(f"\nROUND {round}")
 
 
-def handle_turn_started(game: GameState, player: Player):
+def handle_turn_started(state: GameState, player: Player):
     echo(f"  {player.name().upper()}")
 
 
-def handle_roll_failed(game: GameState, d1: int, d2: int):
+def handle_roll_failed(state: GameState, d1: int, d2: int):
     echo(f"    🎲: {d1}+{d2} ❌ 0")
 
 
-def handle_roll_succeeded(game: GameState, d1: int, d2: int):
-    echo(f"    🎲: {d1}+{d2} ✅ {game.turn_score}")
+def handle_roll_succeeded(state: GameState, d1: int, d2: int):
+    echo(f"    🎲: {d1}+{d2} ✅ {state.turn_score}")
 
 
-def handle_turn_ended(game: GameState, player: Player):
-    echo(f"    TOTAL SCORE: {game.scores[game.active]}")
+def handle_turn_ended(state: GameState, player: Player):
+    echo(f"    TOTAL SCORE: {state.scores[state.active]}")
 
 
-def handle_game_ended(game: GameState, players: list[Player]):
+def handle_game_ended(state: GameState, players: list[Player]):
     echo("\nFINAL SCORE")
     for active in range(len(players)):
         player = players[active]
         echo(
             f"{player.emoji()} {player.name()}: "
-            f"{game.scores[active]} in {game.rolls[active]} rolls"
+            f"{state.scores[active]} in {state.rolls[active]} rolls"
         )
 
-    if game.winner is None:
+    if state.winner is None:
         echo("\nTIE! Play again.\n")
     else:
-        winner = players[game.winner]
+        winner = players[state.winner]
         echo(f"\n🏆 WINNER: {winner.emoji()} {winner.name()}")
         echo(f"{winner.name()} YAWPS: {winner.victory_cry()}\n")
     echo("GAME OVER")
 
 
 def handle_tournament_started(tournament: TournamentState):
-    echo("NOT ONE TOURNAMENT")
+    console.print(panel(Align.center(bigify("Not One Tournament"))))
 
 
 def handle_tournament_round_started(tournament: TournamentState, players: list[Player]):
@@ -74,37 +109,101 @@ def handle_tournament_round_started(tournament: TournamentState, players: list[P
         name = "Sweet Sixteen"
     else:
         name = f"Round of {num_players}"
-    echo(f"\n{name.upper()}")
+    console.print(panel(Align.center(bigify(name))))
 
 
-def handle_tournament_round_ended(tournament: TournamentState, players: list[Player]):
-    if len(players) <= 1:
+def handle_tournament_game_started(state: GameState, players: list[Player]):
+    p1, p2 = players
+    console.rule(
+        f"[bold]{p1.emoji()} {p1.name().upper()} vs. {p2.emoji()} {p2.name().upper()}",
+        style="primary",
+    )
+
+
+def handle_tournament_turn_started(state: GameState, player: Player):
+    echo(f"\n{player.name().upper()} ROLLS")
+
+
+def handle_tournament_rolled(state: GameState, d1: int, d2: int):
+    with console.status("Rolling dice...", spinner="dots"):
+        time.sleep(random.random())
+        emoji = "✅" if not game.failed(state, d1, d2) else "❌"
+        echo(f"  🎲: {d1}+{d2} {emoji} {state.turn_score}")
+
+
+def handle_tournament_round_ended(state: GameState, round: int, players: list[Player]):
+    p1_style = "bold green" if state.scores[0] > state.scores[1] else "bold red"
+    p2_style = "bold green" if state.scores[1] > state.scores[0] else "bold red"
+    echo("\n")
+    console.rule(
+        f"ROUND {round}: "
+        f"[{p1_style}]{players[0].name().upper()}: {state.scores[0]}[/] | "
+        f"[{p2_style}]{players[1].name().upper()}: {state.scores[1]}[/]",
+        align="left",
+        style="secondary",
+    )
+    time.sleep(0.5)
+
+
+def handle_tournament_game_ended(state: GameState, players: list[Player]):
+    if state.winner is None:
         return
-    input("\n  Press enter to play the next round...")
 
-
-def handle_tournament_game_ended(game: GameState, players: list[Player]):
-    if game.winner is None:
-        return
-
-    winner_idx = game.winner
+    winner_idx = state.winner
     loser_idx = 1 - winner_idx
 
     winner = players[winner_idx]
-    winning_score = game.scores[winner_idx]
+    winning_score = state.scores[winner_idx]
 
     loser = players[loser_idx]
-    losing_score = game.scores[loser_idx]
+    losing_score = state.scores[loser_idx]
 
-    echo(f"  {winner.name()} defeats {loser.name()}, {winning_score} to {losing_score}")
+    console.print(
+        panel(
+            Align.center(
+                f"[b]{winner.emoji()} {winner.name().upper()} ({winning_score})[/b]"
+                f" defeats "
+                f"[b]{loser.emoji()} {loser.name().upper()} ({losing_score})[/b]"
+            ),
+        )
+    )
+    console.input("Press enter to continue...")
 
 
 def handle_tournament_ended(tournament: TournamentState, players: list[Player]):
     if tournament.champion is not None:
         champion = players[tournament.champion]
-        echo(f"\n🏆 THE CHAMPION IS: {champion.emoji()} {champion.name()}")
-        echo(f"{champion.name()} YAWPS: {champion.victory_cry()}\n")
-    echo("TOURNAMENT OVER")
+
+        def generate_panel(content: Group, title: str = ""):
+            # Can't use the theme colors in a Live display.
+            return panel(content, title=title, style="white")
+
+        header = Align.center("🏆 THE CHAMPION IS:")
+        champ_title = "A champion is crowned".upper()
+        champ_name = Align.center(bigify(champion.name()))
+        victory_cry_title = f"{champion.name()} yawps".upper()
+
+        with Live(generate_panel(Group(), title=champ_title)) as live:
+            live.update(generate_panel(Group(header), title=champ_title))
+            time.sleep(0.5)
+            live.update(generate_panel(Group(header, champ_name), title=champ_title))
+            time.sleep(0.25)
+
+        with Live(generate_panel(Group(), title=victory_cry_title)) as live:
+            victory_cry = champion.victory_cry()
+            quote = ""
+            font = "tarty1" if len(victory_cry) < 30 else "minion"
+            for word in victory_cry.split():
+                time.sleep(0.5)
+                quote += word + " "
+                live.update(
+                    generate_panel(
+                        Group(Align.center(bigify(quote, font=font))),
+                        title=victory_cry_title,
+                    )
+                )
+    else:
+        console.print(panel(Align.center("Tournament Over".upper())))
 
 
 signal_handlers: dict[GameType, SignalHandler] = {
@@ -120,7 +219,10 @@ signal_handlers: dict[GameType, SignalHandler] = {
     "tournament": SignalHandler(
         tournament_started=handle_tournament_started,
         tournament_round_started=handle_tournament_round_started,
-        tournament_round_ended=handle_tournament_round_ended,
+        game_started=handle_tournament_game_started,
+        turn_started=handle_tournament_turn_started,
+        rolled=handle_tournament_rolled,
+        round_ended=handle_tournament_round_ended,
         game_ended=handle_tournament_game_ended,
         tournament_ended=handle_tournament_ended,
     ),
