@@ -7,7 +7,7 @@ from rich.align import Align
 from rich.console import Console, Group, RenderableType
 from rich.live import Live
 from rich.panel import Panel
-from rich.table import Table
+from rich.table import Table, Column
 from rich.theme import Theme
 
 from notone import game, signals
@@ -212,17 +212,18 @@ def handle_stress_test_started(players: list[Player], total_games: int):
         panel(
             Group(
                 Align.center(bigify("Stress Test")),
-                Align.center(""),
-                Align.center(f"Each player plays {total_games} games"),
+                Align.center(f"Each player plays {total_games:,} games"),
             )
         )
     )
 
 
 def handle_stress_test_ended(scoreboard: dict[str, float]):
-    scores = Table("Player", "Avg. Score", box=box.SIMPLE_HEAVY)
+    scores = Table(
+        "Player", Column(header="Avg. Score", justify="right"), box=box.SIMPLE_HEAVY
+    )
     for player, score in scoreboard.items():
-        scores.add_row(player, str(score))
+        scores.add_row(player, f"{score:.2f}")
     console.print(panel(Align.center(scores)))
 
 
