@@ -128,8 +128,10 @@ def handle_tournament_turn_started(state: GameState, player: Player):
 def handle_tournament_rolled(state: GameState, d1: int, d2: int):
     with console.status("Rolling dice...", spinner="dots"):
         time.sleep(random.random())
-        emoji = "✅" if not game.failed(state, d1, d2) else "❌"
-        echo(f"  🎲: {d1}+{d2} {emoji} {state.turn_score}")
+        failed = game.failed(state, d1, d2)
+        emoji = "✅" if not failed else "❌"
+        score = state.turn_score + d1 + d2 if not failed else 0
+        echo(f"  🎲: {d1}+{d2} {emoji} {score}")
 
 
 def handle_tournament_round_ended(state: GameState, round: int, players: list[Player]):
