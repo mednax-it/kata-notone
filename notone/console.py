@@ -4,7 +4,7 @@ import time
 from art import text2art
 from rich import box
 from rich.align import Align
-from rich.console import Console, Group
+from rich.console import Console, Group, RenderableType
 from rich.live import Live
 from rich.panel import Panel
 from rich.theme import Theme
@@ -31,7 +31,7 @@ def bigify(content: str, font="tarty1"):
     return str(text2art(content.upper(), font=font))
 
 
-def panel(renderable, title=None, style="primary") -> Panel:
+def panel(renderable: RenderableType, title=None, style="primary") -> Panel:
     return Panel(
         renderable,
         title=title,
