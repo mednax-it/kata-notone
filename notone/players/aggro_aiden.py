@@ -1,7 +1,7 @@
 """Aggro Aiden takes an aggressive-but-naive approach, rolling until their
 turn score is over 40."""
 
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def name() -> str:

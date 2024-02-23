@@ -1,7 +1,7 @@
 """Cautious Carter takes an cautious-but-naive approach, only rolling 3
 times."""
 
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def name() -> str:

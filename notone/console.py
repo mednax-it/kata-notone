@@ -3,7 +3,7 @@ import sys
 from rich import print
 
 from notone import signals
-from notone.types import SignalHandler, GameState, GameType, Player, TournamentState
+from notone.schema import SignalHandler, GameState, GameType, Player, TournamentState
 
 
 def echo(message: str, **kwargs):

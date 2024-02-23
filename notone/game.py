@@ -3,7 +3,7 @@ from dataclasses import asdict
 from typing import Iterator
 
 from notone import signals
-from notone.types import (
+from notone.schema import (
     GameState,
     IncrementableAttribute,
     Player,

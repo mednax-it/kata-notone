@@ -3,7 +3,7 @@ import random
 from typing import Iterator, Optional
 
 from notone import game, signals
-from notone.types import Player, TournamentState
+from notone.schema import Player, TournamentState
 
 
 def rounds_necessary_for_winner(num_players: int) -> int:

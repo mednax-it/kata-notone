@@ -1,4 +1,4 @@
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def name() -> str:

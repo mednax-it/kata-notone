@@ -1,7 +1,7 @@
 """Nadire Beatrycze does not roll more than 6 times and a score no more than 16"""
 
 from random import choice
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def name() -> str:

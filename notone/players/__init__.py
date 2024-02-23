@@ -1,6 +1,6 @@
 from importlib import import_module as add
 
-from notone.types import Player
+from notone.schema import Player
 
 """Update the list below to change which players will play the game."""
 

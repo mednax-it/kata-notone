@@ -10,7 +10,7 @@ from notone.tournament import (
     rounds_necessary_for_winner,
     seed_players,
 )
-from notone.types import Player, TournamentState
+from notone.schema import Player, TournamentState
 
 
 @pytest.mark.parametrize(

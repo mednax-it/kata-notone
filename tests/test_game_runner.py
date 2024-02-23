@@ -2,7 +2,7 @@ from dataclasses import FrozenInstanceError
 import pytest
 
 from notone import game
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def test_game_starts(opponents, game_started):

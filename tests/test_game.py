@@ -10,7 +10,7 @@ from notone.game import (
     start_turn,
     turn_order,
 )
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def test_roll_die_does_not_exceed_range():

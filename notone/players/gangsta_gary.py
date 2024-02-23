@@ -1,6 +1,6 @@
 """Gangsta Gary takes an average approach, his secret is ############, and he talks a lot of smack."""
 
-from notone.types import GameState
+from notone.schema import GameState
 import random
 
 

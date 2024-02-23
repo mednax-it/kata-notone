@@ -1,6 +1,6 @@
 """Describe your player and their approach."""
 
-from notone.types import GameState
+from notone.schema import GameState
 
 
 def name() -> str:
